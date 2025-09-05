@@ -14,8 +14,12 @@ const generateTokens = (userId) => {
 	return { accessToken, refreshToken };
 };
 
-await redis.set(`refresh_token:${userId}`, refreshToken, {
-  ex: 7 * 24 * 60 * 60, // expiration in seconds (7 days)
+// const storeRefreshToken = async (userId, refreshToken) => {
+// 	await redis.set(`refresh_token:${userId}`, refreshToken, "EX", 7 * 24 * 60 * 60); // 7days
+// };
+
+await redis.set(`refresh_token:${user._id}`, refreshToken, {
+  ex: 7 * 24 * 60 * 60,
 });
 
 
