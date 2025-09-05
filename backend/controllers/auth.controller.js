@@ -14,14 +14,27 @@ const generateTokens = (userId) => {
 	return { accessToken, refreshToken };
 };
 
+
 // const storeRefreshToken = async (userId, refreshToken) => {
 // 	await redis.set(`refresh_token:${userId}`, refreshToken, "EX", 7 * 24 * 60 * 60); // 7days
 // };
 
-await redis.set(`refresh_token:${user._id}`, refreshToken, {
-  ex: 7 * 24 * 60 * 60,
-});
+// await redis.set(`refresh_token:${user._id}`, refreshToken, {
+//   ex: 7 * 24 * 60 * 60,
+// });
 
+
+// Store refresh token in Upstash Redis
+const storeRefreshToken = async (userId, refreshToken) => {
+  try {
+    const key = `refresh_token:${String(userId)}`;
+    const expiresIn = 7 * 24 * 60 * 60; // 7 days in seconds
+    await redis.set(key, refreshToken, { EX: expiresIn }); // Use uppercase EX for @upstash/redis
+  } catch (error) {
+    console.error("Failed to store refresh token in Upstash Redis:", error.message);
+    throw new Error("Failed to store refresh token");
+  }
+};
 
 const setCookies = (res, accessToken, refreshToken) => {
 	res.cookie("accessToken", accessToken, {
