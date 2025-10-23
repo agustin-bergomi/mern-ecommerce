@@ -29,7 +29,7 @@ const storeRefreshToken = async (userId, refreshToken) => {
   try {
     const key = `refresh_token:${String(userId)}`;
     const expiresIn = 7 * 24 * 60 * 60; // 7 days in seconds
-    await redis.set(key, refreshToken, { EX: expiresIn }); // Use uppercase EX for @upstash/redis
+    await redis.set(key, refreshToken, { ex: expiresIn });
   } catch (error) {
     console.error("Failed to store refresh token in Upstash Redis:", error.message);
     throw new Error("Failed to store refresh token");
